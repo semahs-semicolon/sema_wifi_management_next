@@ -1,8 +1,6 @@
 'use client'
 import Image from 'next/image'
-import { Fragment, useState } from 'react'
 export default function Header() {
-    const [floorExpand, setExpand] = useState(false)
     return (
         <header className="relative flex flex-col gap-5">
             <div className="flex h-16 w-full items-center justify-between bg-blue-300 px-5 py-4">

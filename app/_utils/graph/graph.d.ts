@@ -1,10 +1,5 @@
 type NetworkNodesStatus = 'up' | 'down'
 
-interface Floor {
-    id: number
-    displayName: string
-    ap: AP[]
-}
 interface AP {
     id: string
     displayName: string
