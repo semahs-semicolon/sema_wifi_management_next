@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Pretendard } from "./ui/font/fonts";
-import "./ui/globals.css";
+import { Pretendard } from "@/app/_ui/font/fonts";
+import "@/app/_ui/globals.css";
 
 export const metadata: Metadata = {
   title: "SEMA WiFi Management System",
