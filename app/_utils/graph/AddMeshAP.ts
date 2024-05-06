@@ -1,9 +1,9 @@
 import Graph from 'graphology'
 import { getCoordinatesByCircularSector } from '@/app/_utils/graph/GraphCoordinate'
-import FetchMeshAp from '@/app/_utils/graph/fetch/FetchMeshAp'
-export async function AddApClientNode(graph: Graph, floor: string) {
+import AccessPoint from '@/app/_utils/graph/AccessPoint'
+export async function AddMeshAP(graph: Graph, floor: number) {
     try {
-        const apList = await FetchMeshAp(floor)
+        const apList = await AccessPoint.queryAP({ floor: floor })
         const rootAp = apList.find((ap) => ap.isRoot)
         if (rootAp) {
             graph.addNode(rootAp.id, {
@@ -22,7 +22,7 @@ export async function AddApClientNode(graph: Graph, floor: string) {
                 y: graph.getNodeAttributes(rootAp)['y'],
             },
             15,
-            3,
+            apList.length - 1,
             { to: 420, from: 200 },
         )
         apList.forEach((ap, i) => {
@@ -34,7 +34,8 @@ export async function AddApClientNode(graph: Graph, floor: string) {
                 label: `${ap.displayName}(${ap.ip})`,
                 color: '#7b20ff',
             })
-            graph.addEdge(rootAp.id, ap.id, { size: 3, color: '#333' })
+            const parentAP = new AccessPoint(ap.id).getParentAP()
+            graph.addEdge(parentAP.id, ap.id, { size: 3, color: '#333' })
         })
     } catch (error) {
         throw error
