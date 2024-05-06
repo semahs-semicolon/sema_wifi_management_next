@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import Graph from 'graphology'
 import { SigmaContainer, useLoadGraph } from '@react-sigma/core'
 import '@react-sigma/core/lib/react-sigma.min.css'
-import { AddApClientNode } from '@/app/_utils/graph/AddApClientNode'
 import { AddMeshAP } from '@/app/_utils/graph/AddMeshAP'
 const sigmaStyle = {
     height: '400px',
