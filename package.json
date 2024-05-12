@@ -12,6 +12,7 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.16",
     "@react-sigma/core": "^4.0.2",
+    "@react-spring/web": "^9.7.3",
     "graphology": "^0.25.4",
     "graphology-types": "^0.24.7",
     "next": "14.2.3",
