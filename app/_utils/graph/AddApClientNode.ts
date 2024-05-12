@@ -1,31 +1,34 @@
 import Graph from 'graphology'
-import { HashToSevenDigit } from '@/app/_utils/graph/HashSevenDigit'
 import { getCoordinatesByCircularSector } from '@/app/_utils/graph/GraphCoordinate'
-import AccessPoint from '@/app/_utils/graph/AccessPoint'
-export async function AddApClientNode(graph: Graph, apNode: string) {
+import Station from '@/app/_utils/graph/Station'
+export async function AddApClientNode(graph: Graph, apId: string) {
     try {
-        const ap = new AccessPoint(apNode)
-        const staList = ap
-            .getStaList()
-            .filter((sta) => !sta.isMeshAP && sta.ap == apNode)
+        const staList = (await Station.querySTA({ ap: apId })).filter(
+            (sta) => !sta.isMeshAP,
+        )
         const nodeCoordinates = getCoordinatesByCircularSector(
             {
-                x: graph.getNodeAttributes(apNode)['x'],
-                y: graph.getNodeAttributes(apNode)['y'],
+                x: graph.getNodeAttributes(apId)['x'],
+                y: graph.getNodeAttributes(apId)['y'],
             },
-            10,
-            staList.length - 1,
+            25,
+            staList.length,
             { to: 30, from: 330 },
         )
-        for (let i = 0; i < staList.length; i++) {
-            graph.addNode(staList[i].id, {
+        for (const sta of staList) {
+            const i = staList.indexOf(sta)
+            graph.addNode(sta.id, {
                 x: nodeCoordinates[i].x,
                 y: nodeCoordinates[i].y,
-                size: 15,
-                label: `${HashToSevenDigit(staList[i].id)}(${staList[i].ip})`,
-                color: '#7b20ff',
+                size: 12,
+                label: `${sta.id}`,
+                color: '#20ffc4',
             })
-            graph.addEdge(apNode, staList[i].id, { size: 3, color: '#333' })
+            graph.addEdge(apId, sta.id, {
+                size: 2,
+                color: '#888',
+                label: sta.ip,
+            })
         }
     } catch (error) {
         throw error
