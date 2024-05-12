@@ -1,7 +1,7 @@
 export default class Station {
     id: string
     _ip: string | undefined
-    _status: string | undefined
+    _status: NetworkNodesStatus | undefined
     _mac: string | undefined
     _ap: string | undefined
     _since: number | undefined

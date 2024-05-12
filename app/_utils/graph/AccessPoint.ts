@@ -11,6 +11,7 @@ export default class AccessPoint {
     _floor: number | undefined
     _meshDepth: number | undefined
     _staInterface: string | undefined
+    _since: number | undefined
     _isInited: boolean = false
     private constructor(data: AP) {
         this.id = data.id
@@ -23,6 +24,7 @@ export default class AccessPoint {
         this._meshDepth = data.meshDepth
         this._staInterface = data.staInterface
         this._floor = data.floor
+        this._since = data.since
         this._isInited = true
     }
     static async createAccessPoint(id: string) {
@@ -92,6 +94,12 @@ export default class AccessPoint {
             throw new Error('The floor is not initialized')
         }
         return this._floor
+    }
+    get since() {
+        if (!this._since) {
+            throw new Error('The since is not initialized')
+        }
+        return this._since
     }
     static queryAP(resources: ApResources): Promise<AP[]> {
         return fetch(`http://192.168.0.2:8080/api/ap`, {
