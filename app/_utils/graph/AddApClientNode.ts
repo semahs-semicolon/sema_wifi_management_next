@@ -6,14 +6,15 @@ export async function AddApClientNode(graph: Graph, apId: string) {
         const staList = (await Station.querySTA({ ap: apId })).filter(
             (sta) => !sta.isMeshAP,
         )
+
         const nodeCoordinates = getCoordinatesByCircularSector(
             {
                 x: graph.getNodeAttributes(apId)['x'],
                 y: graph.getNodeAttributes(apId)['y'],
             },
-            25,
+            50,
             staList.length,
-            { to: 30, from: 330 },
+            { to: 360, from: 0 },
         )
         for (const sta of staList) {
             const i = staList.indexOf(sta)

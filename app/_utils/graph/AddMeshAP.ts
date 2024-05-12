@@ -27,7 +27,7 @@ export async function AddMeshAP(graph: Graph, apGroupID: string) {
                             x: graph.getNodeAttributes(parentAP.id)['x'],
                             y: graph.getNodeAttributes(parentAP.id)['y'],
                         },
-                        50,
+                        100,
                         meshApList.length,
                         { to: 420, from: 200 },
                     )
