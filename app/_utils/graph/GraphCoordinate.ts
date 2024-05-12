@@ -40,7 +40,6 @@ export function getCoordinatesByCircularSector(
     const offset = (circularSector.to - circularSector.from) / count
     for (let i = 0; i < count; i++) {
         const angle = circularSector.from + offset * i
-        console.log(angle)
         coordinates.push(
             getCoordinateByRadius(
                 centerCoordinate.x,
