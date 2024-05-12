@@ -1,41 +1,51 @@
 import Graph from 'graphology'
 import { getCoordinatesByCircularSector } from '@/app/_utils/graph/GraphCoordinate'
-import FetchMeshAp from '@/app/_utils/graph/fetch/FetchMeshAp'
-export async function AddApClientNode(graph: Graph, floor: string) {
+import AccessPoint from '@/app/_utils/graph/AccessPoint'
+import Station from '@/app/_utils/graph/Station'
+export async function AddMeshAP(graph: Graph, apGroupID: string) {
     try {
-        const apList = await FetchMeshAp(floor)
-        const rootAp = apList.find((ap) => ap.isRoot)
-        if (rootAp) {
-            graph.addNode(rootAp.id, {
-                x: 0,
-                y: 0,
-                size: 20,
-                label: `Root Router ${rootAp.floor}F(${rootAp.ip})`,
-                color: '#FA4F40',
-            })
-        } else {
-            throw new Error('Root AP not found')
+        const apList = await AccessPoint.queryAP({ apGroupAP: apGroupID })
+        let meshDepth = 0
+        while (true) {
+            meshDepth++
+            const meshApList = apList.filter((ap) => ap.meshDepth === meshDepth)
+            const relativeParentAP = apList.filter(
+                (ap) => ap.meshDepth === meshDepth - 1,
+            )
+            if (meshApList.length === 0 || relativeParentAP.length === 0) break
+            for (let meshAp of meshApList) {
+                const staInterface = await Station.createStation(
+                    meshAp.staInterface,
+                )
+                const parentAP = relativeParentAP.find(
+                    (ap) => ap.id === staInterface.ap,
+                )
+                const index = meshApList.indexOf(meshAp)
+                if (parentAP) {
+                    const nodeCoordinates = getCoordinatesByCircularSector(
+                        {
+                            x: graph.getNodeAttributes(parentAP.id)['x'],
+                            y: graph.getNodeAttributes(parentAP.id)['y'],
+                        },
+                        100,
+                        meshApList.length,
+                        { to: 420, from: 200 },
+                    )
+                    graph.addNode(meshAp.id, {
+                        x: nodeCoordinates[index].x,
+                        y: nodeCoordinates[index].y,
+                        size: 15,
+                        label: `Mesh AP ${meshAp.displayName}`,
+                        color: '#7b20ff',
+                    })
+                    graph.addEdge(parentAP.id, meshAp.id, {
+                        size: 3,
+                        color: '#888',
+                        label: meshAp.ip,
+                    })
+                }
+            }
         }
-        const nodeCoordinates = getCoordinatesByCircularSector(
-            {
-                x: graph.getNodeAttributes(rootAp)['x'],
-                y: graph.getNodeAttributes(rootAp)['y'],
-            },
-            15,
-            3,
-            { to: 420, from: 200 },
-        )
-        apList.forEach((ap, i) => {
-            if (ap.isRoot) return
-            graph.addNode(ap.id, {
-                x: nodeCoordinates[i].x,
-                y: nodeCoordinates[i].y,
-                size: 15,
-                label: `${ap.displayName}(${ap.ip})`,
-                color: '#7b20ff',
-            })
-            graph.addEdge(rootAp.id, ap.id, { size: 3, color: '#333' })
-        })
     } catch (error) {
         throw error
     }

@@ -1,30 +1,35 @@
 import Graph from 'graphology'
-import FetchApClientNode from '@/app/_utils/graph/fetch/FetchApClientNode'
-import { HashToSevenDigit } from '@/app/_utils/graph/HashSevenDigit'
 import { getCoordinatesByCircularSector } from '@/app/_utils/graph/GraphCoordinate'
-export async function AddApClientNode(graph: Graph, apNode: string) {
+import Station from '@/app/_utils/graph/Station'
+export async function AddApClientNode(graph: Graph, apId: string) {
     try {
-        const staList = (await FetchApClientNode(apNode)).filter(
-            (sta) => !sta.isMeshAP && sta.ap == apNode,
+        const staList = (await Station.querySTA({ ap: apId })).filter(
+            (sta) => !sta.isMeshAP,
         )
+
         const nodeCoordinates = getCoordinatesByCircularSector(
             {
-                x: graph.getNodeAttributes(apNode)['x'],
-                y: graph.getNodeAttributes(apNode)['y'],
+                x: graph.getNodeAttributes(apId)['x'],
+                y: graph.getNodeAttributes(apId)['y'],
             },
-            10,
-            3,
-            { to: 420, from: 200 },
+            50,
+            staList.length,
+            { to: 360, from: 0 },
         )
-        for (let i = 0; i < staList.length; i++) {
-            graph.addNode(staList[i].id, {
+        for (const sta of staList) {
+            const i = staList.indexOf(sta)
+            graph.addNode(sta.id, {
                 x: nodeCoordinates[i].x,
                 y: nodeCoordinates[i].y,
-                size: 15,
-                label: `${HashToSevenDigit(staList[i].id)}(${staList[i].ip})`,
-                color: '#7b20ff',
+                size: 12,
+                label: `${sta.id}`,
+                color: '#20ffc4',
             })
-            graph.addEdge(apNode, staList[i].id, { size: 3, color: '#333' })
+            graph.addEdge(apId, sta.id, {
+                size: 2,
+                color: '#888',
+                label: sta.ip,
+            })
         }
     } catch (error) {
         throw error
