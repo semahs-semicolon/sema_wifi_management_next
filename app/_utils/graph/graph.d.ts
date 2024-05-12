@@ -11,6 +11,7 @@ interface AP {
     sta: string[]
     meshDepth: number
     staInterface: string
+    since: number
 }
 interface STA {
     id: string
