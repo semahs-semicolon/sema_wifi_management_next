@@ -7,22 +7,25 @@ export default class Station {
     _since: number | undefined
     _isMeshAP: boolean | undefined
     _isInited: boolean = false
-    constructor(id: string) {
-        this.id = id
-        fetch(`/api/sta/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                this._ip = data.ip
-                this._status = data.status
-                this._mac = data.mac
-                this._ap = data.ap
-                this._since = data.since
-                this._isMeshAP = data.isMeshAP
-                this._isInited = true
-            })
-            .catch((error) => {
-                throw error
-            })
+    private constructor(data: STA) {
+        this.id = data.id
+        this._ip = data.ip
+        this._status = data.status
+        this._mac = data.mac
+        this._ap = data.ap
+        this._since = data.since
+        this._isMeshAP = data.isMeshAP
+        this._isInited = true
+    }
+    static async createStation(id: string) {
+        try {
+            const data = await (
+                await fetch(`http://192.168.0.2:8080/api/sta/${id}`)
+            ).json()
+            return new this(data)
+        } catch (error) {
+            throw error
+        }
     }
     get isInited() {
         return this._isInited
@@ -65,7 +68,7 @@ export default class Station {
         return this._isMeshAP
     }
     static querySTA(resources: staResources): Promise<STA[]> {
-        return fetch(`/api/sta`, {
+        return fetch(`http://192.168.0.2:8080/api/sta`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

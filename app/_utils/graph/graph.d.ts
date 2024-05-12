@@ -5,10 +5,11 @@ interface AP {
     displayName: string
     status: NetworkNodesStatus
     ip: string
-    floor: number
+    apGroupAP: string //apGroupAP is the rootAp id
     mac: string
+    floor: number
     sta: string[]
-    isRoot: boolean
+    meshDepth: number
     staInterface: string
 }
 interface STA {
@@ -36,9 +37,10 @@ interface ApResources {
     displayName?: string
     status?: NetworkNodesStatus
     ip?: string
-    floor?: number
+    apGroupAP?: string
     mac?: string
+    floor?: number
     sta?: string[]
-    isRoot?: boolean
+    meshDepth?: number
     staInterface?: string
 }

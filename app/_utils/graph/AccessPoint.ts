@@ -5,30 +5,35 @@ export default class AccessPoint {
     _displayName: string | undefined
     _status: NetworkNodesStatus | undefined
     _ip: string | undefined
-    _floor: number | undefined
+    _apGroupAP: string | undefined
     _mac: string | undefined
     _sta: string[] | undefined
-    _isRoot: boolean | undefined
+    _floor: number | undefined
+    _meshDepth: number | undefined
     _staInterface: string | undefined
     _isInited: boolean = false
-    constructor(id: string) {
-        this.id = id
-        fetch(`/api/sta/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                this._displayName = data.displayName
-                this._status = data.status
-                this._ip = data.ip
-                this._floor = data.floor
-                this._mac = data.mac
-                this._sta = data.sta
-                this._isRoot = data.isRoot
-                this._staInterface = data.staInterface
-                this._isInited = true
-            })
-            .catch((error) => {
-                throw error
-            })
+    private constructor(data: AP) {
+        this.id = data.id
+        this._displayName = data.displayName
+        this._status = data.status
+        this._ip = data.ip
+        this._apGroupAP = data.apGroupAP
+        this._mac = data.mac
+        this._sta = data.sta
+        this._meshDepth = data.meshDepth
+        this._staInterface = data.staInterface
+        this._floor = data.floor
+        this._isInited = true
+    }
+    static async createAccessPoint(id: string) {
+        try {
+            const data = await (
+                await fetch(`http://192.168.0.2:8080/api/ap/${id}`)
+            ).json()
+            return new this(data)
+        } catch (error) {
+            throw error
+        }
     }
     get isInited() {
         return this._isInited
@@ -52,11 +57,11 @@ export default class AccessPoint {
         }
         return this._ip
     }
-    get floor() {
-        if (!this._floor) {
+    get apGroupAP() {
+        if (!this._apGroupAP) {
             throw new Error('The floor is not initialized')
         }
-        return this._floor
+        return this._apGroupAP
     }
     get mac() {
         if (!this._mac) {
@@ -70,11 +75,11 @@ export default class AccessPoint {
         }
         return this._sta
     }
-    get isRoot() {
-        if (!this._isRoot) {
-            throw new Error('The isRoot is not initialized')
+    get meshDepth() {
+        if (!this._meshDepth) {
+            throw new Error('The meshDepth is not initialized')
         }
-        return this._isRoot
+        return this._meshDepth
     }
     get staInterface() {
         if (!this._staInterface) {
@@ -82,8 +87,14 @@ export default class AccessPoint {
         }
         return this._staInterface
     }
+    get floor() {
+        if (!this._floor) {
+            throw new Error('The floor is not initialized')
+        }
+        return this._floor
+    }
     static queryAP(resources: ApResources): Promise<AP[]> {
-        return fetch(`/api/ap`, {
+        return fetch(`http://192.168.0.2:8080/api/ap`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,21 +102,21 @@ export default class AccessPoint {
             body: JSON.stringify(resources),
         }).then((res) => res.json())
     }
-    getParentAP() {
-        if (this._isRoot) {
+    async getParentAP() {
+        if (this.meshDepth === 0) {
             throw new Error('This AP is root AP')
         }
-        const staInterface = new Station(this.staInterface)
-        return new AccessPoint(staInterface.ap)
+        const staInterface = await Station.createStation(this.staInterface)
+        return await AccessPoint.createAccessPoint(staInterface.ap)
     }
-    getStaList() {
+    async getStaList() {
         const staList: Station[] = []
         if (this.sta.length === 0) {
             return staList
         }
-        this.sta.forEach((sta) => {
-            staList.push(new Station(sta))
-        })
+        for (const sta1 of this.sta) {
+            staList.push(await Station.createStation(sta1))
+        }
         return staList
     }
 }
