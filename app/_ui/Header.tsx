@@ -2,8 +2,8 @@
 import Image from 'next/image'
 export default function Header() {
     return (
-        <header className="relative flex flex-col gap-5">
-            <div className="flex h-16 w-full items-center justify-between bg-blue-300 px-5 py-4">
+        <header className="absolute z-10 flex w-full flex-col">
+            <div className="flex h-16 w-full items-center justify-between px-6 py-4">
                 <div className="flex items-center space-x-3">
                     <a href="/public">
                         <div className="relative h-7 w-7">
@@ -23,14 +23,14 @@ export default function Header() {
                     </ul>
                 </nav>
             </div>
-            <div className="absolute top-20 z-10 grid h-8 w-full grid-cols-4 items-center gap-4 px-5">
-                <div className="flex h-full items-center justify-center rounded-2xl bg-blue-100 hover:bg-blue-200">
+            <div className="grid h-7 w-full grid-cols-4 items-center gap-4 px-7">
+                <div className="flex h-full items-center justify-center rounded-2xl bg-gray-300 hover:bg-slate-300">
                     <span className="text-sm font-normal">2층</span>
                 </div>
-                <div className="flex h-full items-center justify-center rounded-2xl bg-blue-100 hover:bg-blue-200">
+                <div className="flex h-full items-center justify-center rounded-2xl bg-gray-300 hover:bg-slate-300">
                     <span className="text-sm font-normal">3층</span>
                 </div>
-                <div className="flex h-full items-center justify-center rounded-2xl bg-blue-100 hover:bg-blue-200">
+                <div className="flex h-full items-center justify-center rounded-2xl bg-gray-300 hover:bg-slate-300">
                     <span className="text-sm font-normal">4층</span>
                 </div>
             </div>
