@@ -1,8 +1,7 @@
 'use client'
 import Header from '@/app/_ui/Header'
 import { ClickNodeHandler, DisplayGraph } from '@/app/_ui/graph/NetworkGraph'
-import APControl from '@/app/_ui/home/APControl'
-import { createContext, useCallback, useState } from 'react'
+import { useState } from 'react'
 import ConnectionControl from '@/app/_ui/home/ConnectionControl'
 
 export default function Home() {
