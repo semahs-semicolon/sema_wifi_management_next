@@ -1,18 +1,27 @@
-
-import Header from "@/app/_ui/Header";
-import {Fragment} from "react";
-import {DisplayGraph} from "@/app/_ui/graph/NetworkGraph";
+'use client'
+import Header from '@/app/_ui/Header'
+import { ClickNodeHandler, DisplayGraph } from '@/app/_ui/graph/NetworkGraph'
+import APControl from '@/app/_ui/home/APControl'
+import { createContext, useCallback, useState } from 'react'
+import ConnectionControl from '@/app/_ui/home/ConnectionControl'
 
 export default function Home() {
-  return (
-      <Fragment>
-          <Header />
-          <main className="flex min-h-screen flex-col items-center justify-between">
-            <div className="w-full h-50">
-                <DisplayGraph />
-            </div>
-          </main>
-      </Fragment>
-
-  );
+    const [selectedNode, setSelectedNode] = useState<string | null>(null)
+    const nodeClickHandler: ClickNodeHandler = function (nodeId: string) {
+        setSelectedNode(nodeId)
+    }
+    return (
+        <div className={'relative h-full w-full bg-zinc-200'}>
+            <Header />
+            <main className="grid max-h-screen min-h-screen grid-rows-[3fr_2fr] pt-14">
+                <div className="w-full overflow-hidden">
+                    <DisplayGraph
+                        floor={2}
+                        clickNodeHandler={nodeClickHandler}
+                    />
+                </div>
+                <ConnectionControl id={selectedNode} />
+            </main>
+        </div>
+    )
 }
