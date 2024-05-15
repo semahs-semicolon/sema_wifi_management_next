@@ -20,7 +20,7 @@ export default class Station {
     static async createStation(id: string) {
         try {
             const data = await (
-                await fetch(`http://192.168.0.2:8080/api/sta/${id}`)
+                await fetch(`http://localhost:8080/api/sta/${id}`)
             ).json()
             return new this(data)
         } catch (error) {
@@ -68,7 +68,7 @@ export default class Station {
         return this._isMeshAP
     }
     static querySTA(resources: staResources): Promise<STA[]> {
-        return fetch(`http://192.168.0.2:8080/api/sta`, {
+        return fetch(`http://localhost:8080/api/sta`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

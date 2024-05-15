@@ -30,7 +30,7 @@ export default class AccessPoint {
     static async createAccessPoint(id: string) {
         try {
             const data = await (
-                await fetch(`http://192.168.0.2:8080/api/ap/${id}`)
+                await fetch(`http://localhost:8080/api/ap/${id}`)
             ).json()
             return new this(data)
         } catch (error) {
@@ -102,7 +102,7 @@ export default class AccessPoint {
         return this._since
     }
     static queryAP(resources: ApResources): Promise<AP[]> {
-        return fetch(`http://192.168.0.2:8080/api/ap`, {
+        return fetch(`http://localhost:8080/api/ap`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
