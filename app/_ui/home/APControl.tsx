@@ -1,12 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import AccessPoint from '@/app/_utils/graph/AccessPoint'
-import {
-    WifiTethering,
-    WifiTetheringOff,
-    Edit,
-    ArrowDropDown,
-} from '@mui/icons-material'
+import { WifiTethering, WifiTetheringOff, Edit } from '@mui/icons-material'
 import { HashToSevenDigit } from '@/app/_utils/graph/HashSevenDigit'
 import ControlLoading from '@/app/_ui/home/ControlLoading'
 import ControlButton from '@/app/_ui/home/ControlButton'

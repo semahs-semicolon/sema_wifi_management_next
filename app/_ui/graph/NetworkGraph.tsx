@@ -1,4 +1,4 @@
-import { forwardRef, useEffect } from 'react'
+import { useEffect } from 'react'
 import Graph from 'graphology'
 import {
     SigmaContainer,
