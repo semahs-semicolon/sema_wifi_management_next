@@ -1,3 +1,3 @@
-export function HashToSevenDigit(hash: string): string {
-    return hash.slice(0, 7);
+export function HashToSevenDigit(hash: string | undefined): string {
+    return (hash || '').slice(0, 7)
 }

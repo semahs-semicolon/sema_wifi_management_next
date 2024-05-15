@@ -1,0 +1,25 @@
+.apOnOffContainer:hover > .apStatusChangeButton {
+    display: block;
+    opacity: 1;
+}
+.apStatusChangeButton {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.7s;
+}
+.consoleText:after {
+    width: 0.5rem;
+    height: 1rem;
+    content: '';
+    display: inline-block;
+    background-color: #ccc;
+    animation: blink 300ms alternate-reverse infinite;
+}
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
