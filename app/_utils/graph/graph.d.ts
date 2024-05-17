@@ -1,5 +1,9 @@
 type NetworkNodesStatus = 'up' | 'down'
 
+interface floor {
+    floor: number
+    apGroupAPList: string[]
+}
 interface AP {
     id: string
     displayName: string
