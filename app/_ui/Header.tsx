@@ -1,5 +1,6 @@
 'use client'
 import Image from 'next/image'
+import ControlButton from '@/app/_ui/ControlButton'
 export default function Header() {
     return (
         <header className="absolute z-10 flex w-full flex-col">
@@ -24,15 +25,9 @@ export default function Header() {
                 </nav>
             </div>
             <div className="grid h-7 w-full grid-cols-4 items-center gap-4 px-7">
-                <div className="flex h-full items-center justify-center rounded-2xl bg-gray-300 hover:bg-slate-300">
-                    <span className="text-sm font-normal">2층</span>
-                </div>
-                <div className="flex h-full items-center justify-center rounded-2xl bg-gray-300 hover:bg-slate-300">
-                    <span className="text-sm font-normal">3층</span>
-                </div>
-                <div className="flex h-full items-center justify-center rounded-2xl bg-gray-300 hover:bg-slate-300">
-                    <span className="text-sm font-normal">4층</span>
-                </div>
+                <ControlButton text={'2층'} onClick={() => {}} />
+                <ControlButton text={'3층'} onClick={() => {}} />
+                <ControlButton text={'4층'} onClick={() => {}} />
             </div>
         </header>
     )
