@@ -1,40 +1,25 @@
-import { useEffect, useState } from 'react'
 import APControl from '@/app/_ui/home/APControl'
 import STAControl from '@/app/_ui/home/STAControl'
 import ControlLoading from '@/app/_ui/home/ControlLoading'
 import TelnetConsole from '@/app/_ui/home/TelnetConsole'
-
-export default function ConnectionControl({ id }: { id: string | null }) {
-    const [type, setType] = useState<'sta' | 'ap'>()
-    const [controlPanal, setControlPanal] = useState<'default' | 'telnet'>(
-        'telnet',
-    )
-    useEffect(() => {
-        fetchData().then((type) => setType(type))
-        async function fetchData() {
-            const data = await (
-                await fetch(`http://localhost:8080/api/nodeType/${id}`)
-            ).json()
-            switch (data['type']) {
-                case 'ap':
-                    return 'ap'
-                case 'sta':
-                    return 'sta'
-                default:
-                    break
-            }
-        }
-    }, [id])
+import { useSelector } from 'react-redux'
+import { HomeStoreState } from '@/app/_utils/home/store'
+export default function ConnectionControl() {
+    const [id, type, controlPanal] = useSelector((state: HomeStoreState) => [
+        state.graph.id,
+        state.graph.type,
+        state.graph.controlPanal,
+    ])
     if (!id) return <ControlLoading />
     switch (type) {
         case 'ap':
             if (controlPanal === 'default') {
-                return <APControl id={id} />
+                return <APControl />
             } else {
-                return <TelnetConsole id={id} />
+                return <TelnetConsole />
             }
         case 'sta':
-            return <STAControl id={id} />
+            return <STAControl />
         default:
             return <ControlLoading />
     }

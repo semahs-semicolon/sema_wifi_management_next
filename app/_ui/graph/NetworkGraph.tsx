@@ -10,6 +10,13 @@ import { AddMeshAP } from '@/app/_utils/graph/AddMeshAP'
 import { AddApGroupRoot } from '@/app/_utils/graph/AddApGroupRoot'
 import { AddApClientNode } from '@/app/_utils/graph/AddApClientNode'
 import AccessPoint from '@/app/_utils/graph/AccessPoint'
+import { useDispatch, useSelector } from 'react-redux'
+import { HomeStoreDispatch, HomeStoreState } from '@/app/_utils/home/store'
+import { nodeId, nodeType } from '@/app/_utils/graph/redux/NetworkGraphSlicer'
+import {
+    GetNodeIdFromPrefix,
+    GetNodeTypeFromPrefix,
+} from '@/app/_utils/graph/NetworkNodeIdUtils'
 const sigmaStyle = {
     height: '600px',
     width: '100vw',
@@ -17,21 +24,19 @@ const sigmaStyle = {
 }
 export type ClickNodeHandler = (nodeId: string) => void
 
-export const LoadGraph = ({
-    floor,
-    clickNodeHandler,
-}: {
-    floor: number
-    clickNodeHandler: ClickNodeHandler
-}) => {
+export const LoadGraph = () => {
     const loadGraph = useLoadGraph()
     const registerEvents = useRegisterEvents()
+    const [floor] = useSelector((state: HomeStoreState) => [state.graph.floor])
+    const dispatch: HomeStoreDispatch = useDispatch()
     useEffect(() => {
         const graph = new Graph()
         addNodeWrapper().then(() => {
             registerEvents({
                 clickNode: (event) => {
-                    clickNodeHandler(event.node)
+                    const rawId = event.node
+                    dispatch(nodeId(GetNodeIdFromPrefix(rawId)))
+                    dispatch(nodeType(GetNodeTypeFromPrefix(rawId)))
                 },
             })
             loadGraph(graph)
@@ -53,18 +58,12 @@ export const LoadGraph = ({
                 }
             }
         }
-    }, [clickNodeHandler, floor, loadGraph, registerEvents])
+    }, [dispatch, floor, loadGraph, registerEvents])
     return null
 }
 
 // Component that display the graph
-export const DisplayGraph = ({
-    floor,
-    clickNodeHandler,
-}: {
-    floor: number
-    clickNodeHandler: ClickNodeHandler
-}) => {
+export const DisplayGraph = () => {
     return (
         <SigmaContainer
             style={sigmaStyle}
@@ -75,7 +74,7 @@ export const DisplayGraph = ({
                 labelSize: 14,
             }}
         >
-            <LoadGraph floor={floor} clickNodeHandler={clickNodeHandler} />
+            <LoadGraph />
         </SigmaContainer>
     )
 }

@@ -2,6 +2,7 @@ import Graph from 'graphology'
 import { getCoordinatesByCircularSector } from '@/app/_utils/graph/GraphCoordinate'
 import AccessPoint from '@/app/_utils/graph/AccessPoint'
 import Station from '@/app/_utils/graph/Station'
+import { AppendNodeTypePrefix } from '@/app/_utils/graph/NetworkNodeIdUtils'
 export async function AddMeshAP(graph: Graph, apGroupID: string) {
     try {
         const apList = await AccessPoint.queryAP({ apGroupAP: apGroupID })
@@ -22,27 +23,32 @@ export async function AddMeshAP(graph: Graph, apGroupID: string) {
                 )
                 const index = meshApList.indexOf(meshAp)
                 if (parentAP) {
+                    const prefixedApId = AppendNodeTypePrefix('ap', parentAP.id)
                     const nodeCoordinates = getCoordinatesByCircularSector(
                         {
-                            x: graph.getNodeAttributes(parentAP.id)['x'],
-                            y: graph.getNodeAttributes(parentAP.id)['y'],
+                            x: graph.getNodeAttributes(prefixedApId)['x'],
+                            y: graph.getNodeAttributes(prefixedApId)['y'],
                         },
                         100,
                         meshApList.length,
                         { to: 420, from: 200 },
                     )
-                    graph.addNode(meshAp.id, {
+                    graph.addNode(AppendNodeTypePrefix('ap', meshAp.id), {
                         x: nodeCoordinates[index].x,
                         y: nodeCoordinates[index].y,
                         size: 15,
                         label: `Mesh AP ${meshAp.displayName}`,
                         color: '#7b20ff',
                     })
-                    graph.addEdge(parentAP.id, meshAp.id, {
-                        size: 3,
-                        color: '#888',
-                        label: meshAp.ip,
-                    })
+                    graph.addEdge(
+                        AppendNodeTypePrefix('ap', parentAP.id),
+                        AppendNodeTypePrefix('ap', meshAp.id),
+                        {
+                            size: 3,
+                            color: '#888',
+                            label: meshAp.ip,
+                        },
+                    )
                 }
             }
         }

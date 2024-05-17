@@ -1,7 +1,10 @@
 import Graph from 'graphology'
 import { getCoordinatesByCircularSector } from '@/app/_utils/graph/GraphCoordinate'
 import AccessPoint from '@/app/_utils/graph/AccessPoint'
-import { HashToSevenDigit } from '@/app/_utils/graph/HashSevenDigit'
+import {
+    AppendNodeTypePrefix,
+    HashToSevenDigit,
+} from '@/app/_utils/graph/NetworkNodeIdUtils'
 export async function AddApGroupRoot(graph: Graph, floor: number) {
     try {
         const rootAP = await AccessPoint.queryAP({ floor: floor, meshDepth: 0 })
@@ -16,7 +19,7 @@ export async function AddApGroupRoot(graph: Graph, floor: number) {
         )
         for (const ap of rootAP) {
             const i = rootAP.indexOf(ap)
-            graph.addNode(ap.id, {
+            graph.addNode(AppendNodeTypePrefix('ap', ap.id), {
                 x: nodeCoordinates[i].x,
                 y: nodeCoordinates[i].y,
                 size: 20,

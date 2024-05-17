@@ -2,13 +2,20 @@
 import { useEffect, useState } from 'react'
 import Station from '@/app/_utils/graph/Station'
 import { WifiTethering, WifiTetheringOff, Edit } from '@mui/icons-material'
-import { HashToSevenDigit } from '@/app/_utils/graph/HashSevenDigit'
+import { HashToSevenDigit } from '@/app/_utils/graph/NetworkNodeIdUtils'
 import ControlLoading from '@/app/_ui/home/ControlLoading'
-import ControlButton from '@/app/_ui/home/ControlButton'
-export default function STAControl({ id }: { id: string }) {
+import ControlButton from '@/app/_ui/ControlButton'
+import { useSelector } from 'react-redux'
+import { HomeStoreState } from '@/app/_utils/home/store'
+export default function STAControl() {
     const [data, setData] = useState<Station>()
     const [loading, setLoading] = useState<boolean>(true)
+    const id = useSelector((state: HomeStoreState) => state.graph.id)
     useEffect(() => {
+        if (!id) {
+            setLoading(true)
+            return
+        }
         Station.createStation(id).then((sta) => {
             setData(sta)
             setLoading(false)

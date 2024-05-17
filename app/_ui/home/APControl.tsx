@@ -2,14 +2,21 @@
 import { useEffect, useState } from 'react'
 import AccessPoint from '@/app/_utils/graph/AccessPoint'
 import { WifiTethering, WifiTetheringOff, Edit } from '@mui/icons-material'
-import { HashToSevenDigit } from '@/app/_utils/graph/HashSevenDigit'
+import { HashToSevenDigit } from '@/app/_utils/graph/NetworkNodeIdUtils'
 import ControlLoading from '@/app/_ui/home/ControlLoading'
-import ControlButton from '@/app/_ui/home/ControlButton'
+import ControlButton from '@/app/_ui/ControlButton'
 import './home.css'
-export default function APControl({ id }: { id: string }) {
+import { useSelector } from 'react-redux'
+import { HomeStoreState } from '@/app/_utils/home/store'
+export default function APControl() {
     const [data, setData] = useState<AccessPoint>()
     const [loading, setLoading] = useState<boolean>(true)
+    const id = useSelector((state: HomeStoreState) => state.graph.id)
     useEffect(() => {
+        if (!id) {
+            setLoading(true)
+            return
+        }
         AccessPoint.createAccessPoint(id).then((ap) => {
             setData(ap)
             setLoading(false)
